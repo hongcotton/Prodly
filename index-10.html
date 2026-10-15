@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Prodly — Stop shouting. Start prodding.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F3EFE7; --ink:#17150F; --card:#FFFFFF; --line:#DCD6C9; --muted:#5B574C;
+  --red:#D7263D; --red-text:#A8152A; --red-bright:#FF6B6B; --green:#1F8A4C;
+  --display:"Archivo Black", Impact, "Arial Black", sans-serif;
+  --body:Archivo, "Helvetica Neue", Helvetica, sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --paper:#17150F; --ink:#F3EFE7; --card:#221F18; --line:#3A362C; --muted:#B7B1A3; --red-text:#FF7A7A; }
+}
+:root[data-theme="dark"]{ --paper:#17150F; --ink:#F3EFE7; --card:#221F18; --line:#3A362C; --muted:#B7B1A3; --red-text:#FF7A7A; }
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased}
+img,svg{max-width:100%}
+a{color:var(--red-text)}
+:focus-visible{outline:3px solid var(--red);outline-offset:3px}
+.wrap{max-width:1160px;margin:0 auto;padding:0 28px}
+h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;line-height:1;letter-spacing:-0.015em}
+h2{font-size:clamp(34px,5vw,56px);max-width:18ch}
+h3{font-size:22px;line-height:1.15}
+p{margin:0}
+.lede{font-size:20px;max-width:58ch;color:var(--muted)}
+section{padding:96px 0;border-top:2px solid var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 24px;border-radius:999px;font:700 17px var(--body);text-decoration:none;border:2px solid var(--ink);cursor:pointer}
+.btn-red{background:var(--red);color:#fff;border-color:var(--red)}
+.btn-line{background:transparent;color:var(--ink)}
+
+/* nav */
+nav{display:flex;justify-content:space-between;align-items:center;padding:22px 0}
+.logo{font-family:var(--display);font-size:26px;text-decoration:none;color:var(--ink)}
+.logo span,.dot{color:var(--red)}
+nav .links{display:flex;gap:24px;align-items:center}
+nav .links a{color:var(--ink);text-decoration:none;font-weight:500;font-size:16px}
+@media (max-width:700px){nav .links a:not(.btn){display:none}}
+
+/* hero */
+.hero{padding:40px 0 64px}
+.hero h1{font-size:clamp(56px,11vw,150px);line-height:.9;max-width:11ch}
+.hero .tag{font-family:var(--display);font-size:clamp(28px,4.4vw,52px);line-height:1.05;margin-top:18px}
+.hero .tag em{font-style:normal;color:var(--red-text)}
+.hero .lede{margin-top:20px}
+.hero .ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.wand{margin-top:48px;width:100%;height:auto;display:block}
+
+/* moments */
+.moments{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:40px}
+@media (max-width:760px){.moments{grid-template-columns:1fr}}
+.moment{border:2px solid var(--ink);border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:12px;background:var(--card)}
+.moment.knight-m{background:#17150F;color:#F3EFE7;border-color:#17150F}
+.moment .sfx{font-family:var(--display);font-size:clamp(40px,6vw,64px);line-height:1;color:var(--red-text)}
+.moment.knight-m .sfx{color:var(--red-bright)}
+.moment h3{font-size:26px}
+.kn{font-family:"Segoe UI Symbol","Apple Symbols","DejaVu Sans",serif;font-variant-emoji:text;font-size:.9em}
+.moment p{font-size:17px}
+.moment .result{margin-top:auto;padding-top:14px;border-top:2px dashed currentColor;font-weight:700;font-variant-numeric:tabular-nums}
+.whys{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 48px;margin-top:40px}
+@media (max-width:760px){.whys{grid-template-columns:1fr}}
+.whys h3{font-size:22px;margin-bottom:8px}
+.whys p{color:var(--muted);font-size:17px}
+
+/* problem */
+.threats{display:flex;flex-wrap:wrap;gap:10px;margin:32px 0}
+.threats span{background:var(--card);border:2px solid var(--line);border-radius:999px;padding:10px 18px;font-weight:500;text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:2px}
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:48px;margin-top:36px}
+@media (max-width:820px){.cols{grid-template-columns:1fr;gap:28px}}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:36px;margin-top:48px;counter-reset:s}
+.step{counter-increment:s;display:flex;flex-direction:column;gap:12px}
+.step::before{content:counter(s);font-family:var(--display);font-size:22px;width:48px;height:48px;border-radius:24px;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center}
+@media (max-width:820px){.steps{grid-template-columns:1fr}}
+
+/* demo */
+.demo{display:grid;grid-template-columns:minmax(0,1fr) 330px 330px;gap:28px;margin-top:48px;align-items:start}
+@media (max-width:1100px){.demo{grid-template-columns:1fr 1fr}.rules{grid-column:1 / -1}}
+@media (max-width:720px){.demo{grid-template-columns:1fr;justify-items:center}.rules{justify-self:stretch}}
+.rules{background:var(--card);border:2px solid var(--ink);border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:20px}
+.rules h3{font-size:24px}
+.seg{display:grid;grid-template-columns:1fr 1fr;border:2px solid var(--ink);border-radius:14px;overflow:hidden}
+.seg button{min-height:48px;border:0;background:transparent;color:var(--ink);font:700 16px var(--body);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.row .lbl{font-weight:700}
+.row .hint{font-size:14px;color:var(--muted)}
+.stepper{display:flex;align-items:center;gap:6px}
+.stepper button{width:44px;height:44px;border-radius:22px;border:2px solid var(--ink);background:transparent;color:var(--ink);font:700 20px var(--body);cursor:pointer}
+.stepper output{min-width:70px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}
+.small{font-size:14px;color:var(--muted)}
+
+.phone{width:330px;max-width:100%;background:#17150F;color:#F3EFE7;border-radius:40px;padding:14px;border:2px solid #17150F;box-shadow:0 0 0 6px #2B2821}
+.screen{background:#1E1C16;border-radius:28px;padding:22px 18px;min-height:600px;display:flex;flex-direction:column;gap:14px}
+.phone.light .screen{background:#F3EFE7;color:#17150F}
+.ph-head{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#B7B1A3}
+.phone.light .ph-head{color:#5B574C}
+.ph-head b{font-family:var(--display);font-weight:400;font-size:19px;color:inherit}
+.phone.light .ph-head b{color:#17150F}
+.bal{background:#17150F;color:#F3EFE7;border-radius:18px;padding:16px}
+.bal .n{font-family:var(--display);font-size:42px;line-height:1;color:var(--red-bright);font-variant-numeric:tabular-nums}
+.bal .u{font-size:14px;color:#B7B1A3;margin-top:4px}
+.bar{height:8px;border-radius:4px;background:#3A362C;margin-top:12px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--red);transition:width .25s}
+.prod{align-self:center;width:136px;height:136px;border-radius:68px;border:5px solid #17150F;background:var(--red);color:#fff;font:400 32px var(--display);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.prod small{font:700 15px var(--body);margin-top:4px}
+.prod:disabled{background:#CFC9BA;color:#17150F;cursor:not-allowed}
+.status{text-align:center;font-size:14px;min-height:21px;color:#5B574C}
+.knight{min-height:52px;border-radius:14px;border:2px solid #17150F;background:#17150F;color:var(--red-bright);font:400 17px var(--display);display:flex;justify-content:space-between;align-items:center;padding:0 16px;cursor:pointer}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pair button{min-height:46px;border-radius:12px;border:2px solid #17150F;background:transparent;color:#17150F;font:700 14px var(--body);cursor:pointer}
+.pair button:disabled{opacity:.4;cursor:not-allowed}
+.log{display:flex;flex-direction:column;gap:6px;list-style:none;margin:0;padding:0}
+.log li{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-radius:10px;font-size:14px}
+.phone.light .log li{background:#fff;border:1px solid #DCD6C9}
+.phone:not(.light) .log li{background:#2A2720}
+.log li b{font-variant-numeric:tabular-nums}
+.log .t{font-size:12px;color:#8A8578}
+.kidbig{text-align:center;padding:18px 0 4px}
+.kidbig .n{font-family:var(--display);font-size:56px;line-height:1;color:var(--red-bright);font-variant-numeric:tabular-nums}
+.kidbig .u{font-size:14px;color:#B7B1A3;margin-top:6px}
+.hp{height:18px;border-radius:6px;background:#2A2720;border:2px solid #3A362C;overflow:hidden;margin:12px 0 2px}
+.hp i{display:block;height:100%;background:repeating-linear-gradient(90deg,var(--red) 0 22px,#9A1227 22px 24px);transition:width .3s}
+.rank{display:flex;align-items:center;justify-content:space-between;border:2px solid #3A362C;border-radius:14px;padding:10px 12px}
+.rank .r{font:400 20px var(--display);color:#F3EFE7}
+.rank .kn{font-size:28px;color:var(--red-bright)}
+.rank small{display:block;font-size:12px;color:#B7B1A3}
+.xp{height:6px;border-radius:3px;background:#2A2720;margin-top:6px;overflow:hidden}
+.xp i{display:block;height:100%;background:#7FD8A4;transition:width .3s}
+@keyframes hit{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+@keyframes lvl{0%{transform:scale(1)}40%{transform:scale(1.06)}100%{transform:scale(1)}}
+.hit{animation:hit .35s}.lvl{animation:lvl .45s}
+@media (prefers-reduced-motion: reduce){.hit,.lvl{animation:none}}
+.gameplay{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;margin-top:40px}
+@media (max-width:820px){.gameplay{grid-template-columns:1fr}}
+.gameplay .g{font:400 30px var(--display);color:var(--red-text);line-height:1;margin-bottom:10px}
+.gameplay p{color:var(--muted);font-size:17px}
+.kidcards{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.kidcards div{border:2px solid #3A362C;border-radius:14px;padding:10px 12px;font-size:13px;color:#B7B1A3}
+.kidcards strong{display:block;font:400 22px var(--display);color:#F3EFE7}
+.appeal{margin-top:auto;min-height:50px;border-radius:14px;border:2px solid #F3EFE7;background:transparent;color:#F3EFE7;font:700 15px var(--body);cursor:pointer}
+.caption{text-align:center;font-size:14px;color:var(--muted);margin-top:12px}
+.plus{color:#7FD8A4}.minus{color:var(--red-bright)}
+.phone.light .minus{color:#A8152A}.phone.light .plus{color:#1F8A4C}
+
+/* wand */
+.features{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:32px;margin-top:40px}
+.features p{font-size:16px;color:var(--muted);margin-top:8px}
+@media (max-width:900px){.features{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.features{grid-template-columns:1fr}}
+.nowand{margin-top:48px;background:var(--card);border:2px solid var(--line);border-radius:24px;padding:32px;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:40px;align-items:center}
+@media (max-width:820px){.nowand{grid-template-columns:1fr;justify-items:center}}
+.nw-copy{display:flex;flex-direction:column;gap:16px}
+.nw-copy h3{font-size:clamp(26px,3.2vw,36px);line-height:1.05}
+.nw-copy>p{font-size:18px;color:var(--muted)}
+.nowand ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.nowand li{font-size:18px;color:var(--muted)}
+.nowand li strong{color:var(--ink);margin-right:6px}
+.pw-wrap{width:280px;max-width:100%}
+.pw-phone{background:#17150F;border-radius:44px;padding:12px;box-shadow:0 0 0 6px #2B2821,0 24px 50px rgba(0,0,0,.25)}
+.pw-screen{background:#17150F;border-radius:34px;height:520px;padding:20px 16px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;color:#F3EFE7;user-select:none;-webkit-user-select:none}
+.pw-top{width:100%;display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#B7B1A3}
+.pw-top b{font-family:var(--display);font-weight:400;font-size:18px;color:#F3EFE7}
+.pw-nose{position:relative;width:210px;height:210px;border-radius:50%;border:0;cursor:pointer;background:radial-gradient(circle at 34% 30%,#FF8A93 0,#E0303F 45%,#9A1227 100%);box-shadow:0 14px 30px rgba(215,38,61,.35);transition:transform .12s;touch-action:manipulation}
+.pw-nose:active{transform:scale(.94)}
+.pw-shine{position:absolute;left:46px;top:40px;width:62px;height:30px;border-radius:50%;background:#fff;opacity:.55;transform:rotate(-30deg)}
+.pw-msg{font:400 22px var(--display);text-align:center;min-height:56px;line-height:1.15}
+.pw-hint{font-size:13px;color:#8A8578}
+.pw-nose.hit{animation:hit .35s}.pw-nose.lvl{animation:lvl .45s}
+
+@media (max-width:620px){.nowand ul{grid-template-columns:1fr}}
+
+.render{display:block;width:100%;height:auto;color:var(--ink);margin-top:40px}
+.features .num{display:inline-flex;width:30px;height:30px;border-radius:15px;background:var(--red);color:#fff;font:400 15px var(--display);align-items:center;justify-content:center;margin-bottom:10px}
+/* evidence */
+.evidence{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:48px}
+@media (max-width:900px){.evidence{grid-template-columns:1fr}}
+.ev{background:var(--card);border:2px solid var(--ink);border-radius:20px;padding:26px;display:flex;flex-direction:column;gap:14px}
+.ev p{font-size:16px}
+.ev .src{margin-top:auto;font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+.footnote{margin-top:24px;font-size:14px;color:var(--muted);max-width:70ch}
+
+/* close */
+.close{background:#17150F;color:#F3EFE7;border-top:0;text-align:center}
+.close h2{margin:0 auto;max-width:none;font-size:clamp(40px,7vw,88px)}
+.close h2 span{color:var(--red-bright)}
+.close p{color:inherit;opacity:.8;margin:20px auto 32px;max-width:48ch}
+
+footer{padding:28px 0;font-size:14px;color:var(--muted)}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <nav aria-label="Main">
+    <a class="logo" href="#top">Prodly<span>.</span></a>
+    <div class="links">
+      <a href="#how">How it works</a>
+      <a href="#try">Try it</a>
+      <a href="#wand">The wand</a>
+      <a href="#why">Why it works</a>
+      <a class="btn btn-red" href="#join">Get early access</a>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+  <div class="wrap hero">
+    <h1>Stop shouting. Start prodding<span class="dot">.</span></h1>
+    <p class="tag">Prod the bad. <em>Knight the good.</em></p>
+    <p class="lede">Prodly is a red-nosed wand and a simple app. One prod costs your kid a little screen time. A tap on each shoulder gives it back. It takes the heat out of the moment, for them and for you.</p>
+    <div class="ctas">
+      <a class="btn btn-red" href="#try">Try it</a>
+      <a class="btn btn-line" href="#how">How it works</a>
+    </div>
+    <svg class="wand" viewBox="0 0 960 440" role="img" aria-label="The Prodly wand: a short Bluetooth stick with a soft red foam ball on the end"><defs>
+  <radialGradient id="htip" cx="34%" cy="30%" r="78%"><stop offset="0" stop-color="#FF8A93"/><stop offset=".45" stop-color="#E0303F"/><stop offset="1" stop-color="#9A1227"/></radialGradient>
+  <linearGradient id="hshaft" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5A554A"/><stop offset=".5" stop-color="#2A2822"/><stop offset="1" stop-color="#100F0C"/></linearGradient>
+  <linearGradient id="hhandle" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#46423A"/><stop offset=".5" stop-color="#1D1B16"/><stop offset="1" stop-color="#0A0907"/></linearGradient>
+  <pattern id="hhaz" width="22" height="22" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="22" height="22" fill="#17150F"/><rect width="11" height="22" fill="#D7263D"/></pattern>
+  <filter id="hglow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="5"/></filter>
+  <filter id="hshadow" x="-10%" y="-200%" width="120%" height="500%"><feGaussianBlur stdDeviation="10"/></filter>
+</defs>
+<ellipse cx="480" cy="408" rx="390" ry="18" fill="#000" opacity=".16" filter="url(#hshadow)"/>
+<g transform="translate(480 220) rotate(-14) translate(-440 0)">
+  <rect x="186" y="-20" width="36" height="40" rx="8" fill="url(#hhandle)"/>
+  <rect x="216" y="-13" width="380" height="26" fill="url(#hshaft)"/>
+  <rect x="228" y="-13" width="190" height="26" fill="url(#hhaz)"/>
+  <rect x="216" y="-9" width="380" height="4" fill="#fff" opacity=".14"/>
+  <rect x="580" y="-32" width="300" height="64" rx="32" fill="url(#hhandle)"/>
+  <rect x="604" y="-25" width="252" height="8" rx="4" fill="#fff" opacity=".09"/>
+  <circle cx="630" cy="0" r="12" fill="#FF4A5A" opacity=".85" filter="url(#hglow)"/>
+  <circle cx="630" cy="0" r="6" fill="#FFD6DA"/>
+  <text x="712" y="6" text-anchor="middle" font-family="Archivo Black, sans-serif" font-size="15" letter-spacing="3" fill="#7A7468">PRODLY</text>
+  <circle cx="815" cy="0" r="17" fill="none" stroke="#6B665A" stroke-width="2" stroke-dasharray="4 3"/>
+  <circle cx="100" cy="0" r="92" fill="url(#htip)"/>
+  <ellipse cx="68" cy="-42" rx="28" ry="14" fill="#fff" opacity=".6" transform="rotate(-30 68 -42)"/>
+  <circle cx="130" cy="30" r="3.5" fill="#6E0E1C" opacity=".35"/><circle cx="90" cy="50" r="3" fill="#6E0E1C" opacity=".3"/><circle cx="145" cy="-10" r="3" fill="#6E0E1C" opacity=".3"/>
+</g></svg>
+    
+    <div class="moments">
+      <div class="moment">
+        <div class="sfx">Prod.</div>
+        <h3>The prod</h3>
+        <p>One touch of the red foam tip on the arm. A sad little sound from your phone. No lecture, no raised voice, nothing to argue with.</p>
+        <div class="result">−10 minutes</div>
+      </div>
+      <div class="moment knight-m">
+        <div class="sfx"><span class="kn" aria-hidden="true">&#9822;&#xFE0E;</span> Arise.</div>
+        <h3>The knighting</h3>
+        <p>The wand on each shoulder, the way knights have always been made. A fanfare from your phone and &#8220;Arise, Sir Emptied-The-Dishwasher-Without-Being-Asked.&#8221; Praise they&#39;ll actually remember.</p>
+        <div class="result">+10 minutes</div>
+      </div>
+    </div>
+    
+  </div>
+
+  <section id="problem">
+    <div class="wrap">
+      <h2>Shouting doesn&#39;t work. Neither do empty threats.</h2>
+      <div class="threats" aria-label="Familiar threats">
+        <span>No iPad tomorrow</span><span>Santa isn&#39;t coming</span><span>I&#39;m counting to three</span><span>We&#39;re leaving right now</span><span>That&#39;s it, no more Roblox, ever</span>
+      </div>
+      <p class="lede">We threaten something big and far away, then we&#39;re too tired to follow through. Kids learn the threat is noise, and the shouting gets louder. A prod is different.</p>
+      <div class="whys">
+        <div><h3>It keeps you calm</h3><p>You can&#39;t prod someone with a red foam ball while shouting without looking ridiculous. The ritual stops the escalation before it starts.</p></div>
+        <div><h3>There&#39;s nothing to argue with</h3><p>The prod says it for you. No speech to push back against, just a sad sound and a number going down.</p></div>
+        <div><h3>It happens face to face</h3><p>Not a tap on an app from the sofa. A prod is contact and eye contact, in the room, in the moment.</p></div>
+        <div><h3>Praise becomes a ceremony</h3><p>&#8220;Well done&#8221; feels thin. A knighting with a fanfare is a moment a kid will talk about, and want again.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="play">
+    <div class="wrap">
+      <h2>Meet them where they play</h2>
+      <p class="lede" style="margin-top:16px">Kids spend hours in worlds where every action gets instant feedback. Take a hit, lose health. Do something brave, level up. Real life gives them the opposite: vague consequences, days later. Prodly borrows the rules of their games and brings them into the room, triggered by something physical and human.</p>
+      <div class="gameplay">
+        <div><div class="g">A prod is a hit.</div><p>Their health bar drops, right now, with a sound they recognise. No lecture needed; they already understand damage.</p></div>
+        <div><div class="g">A knighting is a level-up.</div><p>Every knighting moves them up the ranks, from Squire to Knight to Paladin. Status is what they play for anyway.</p></div>
+        <div><div class="g">Sunday is a new season.</div><p>The week resets, like every game they love. A bad week isn&#39;t forever, and a good one is worth defending.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="wrap">
+      <h2>Underneath, a simple weekly allowance</h2>
+      <div class="steps">
+        <div class="step"><h3>Give it to them up front</h3><p>Each week your child starts with their full allowance of screen time or Robux. It&#39;s theirs from day one, so it&#39;s something to lose, not a prize to chase.</p></div>
+        <div class="step"><h3>Prod the bad</h3><p>Misbehaviour costs a little, straight away. One prod, a sad sound, done. No speeches, no escalation.</p></div>
+        <div class="step"><h3>Knight the good</h3><p>Catch them being good and knight them: a tap on each shoulder, a fanfare, and time or Robux back. Whatever&#39;s left at the end of the week is theirs.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="try">
+    <div class="wrap">
+      <h2>Try it</h2>
+      <p class="lede" style="margin-top:16px">Set the rules, then prod and knight. Their screen on the right plays it like a game: health drops on a prod, rank rises on a knighting.</p>
+      <div class="demo">
+        <div class="rules" aria-label="Set the rules">
+          <h3>Set the rules</h3>
+          <div>
+            <div class="row" style="margin-bottom:8px"><span class="lbl">What&#39;s at stake</span></div>
+            <div class="seg" role="group" aria-label="Stake">
+              <button type="button" id="mTime" aria-pressed="true">Screen time</button>
+              <button type="button" id="mRobux" aria-pressed="false">Robux</button>
+            </div>
+          </div>
+          <div class="row"><div><div class="lbl">Weekly allowance</div><div class="hint" id="wHint">Resets every Sunday</div></div>
+            <div class="stepper"><button type="button" data-k="weekly" data-d="-1" aria-label="Less weekly allowance">−</button><output id="wOut"></output><button type="button" data-k="weekly" data-d="1" aria-label="More weekly allowance">+</button></div></div>
+          <div class="row"><div><div class="lbl">Each prod</div><div class="hint">Taken off</div></div>
+            <div class="stepper"><button type="button" data-k="prod" data-d="-1" aria-label="Smaller prod">−</button><output id="pOut"></output><button type="button" data-k="prod" data-d="1" aria-label="Bigger prod">+</button></div></div>
+          <div class="row"><div><div class="lbl">Each knighting</div><div class="hint">Added back</div></div>
+            <div class="stepper"><button type="button" data-k="knight" data-d="-1" aria-label="Smaller knighting">−</button><output id="kOut"></output><button type="button" data-k="knight" data-d="1" aria-label="Bigger knighting">+</button></div></div>
+          <p class="small">Changing the stake or the weekly allowance starts a fresh week. Sound is on: prods sound sad, knightings get a fanfare.</p>
+        </div>
+
+        <div>
+          <div class="phone light" aria-label="Parent app">
+            <div class="screen">
+              <div class="ph-head"><b>Prodly<span class="dot">.</span></b><span>● Wand paired</span></div>
+              <div class="bal">
+                <div class="u" id="pMode">Child 1 · screen time</div>
+                <div class="n" id="pBal"></div>
+                <div class="u" id="pOf"></div>
+                <div class="bar"><i id="pBar"></i></div>
+              </div>
+              <button type="button" class="prod" id="prodBtn"><span id="prodTop">PROD</span><small id="prodSub"></small></button>
+              <div class="status" id="status" aria-live="polite">Ready.</div>
+              <button type="button" class="knight" id="knightBtn"><span>Knight them</span><span id="knightAmt"></span></button>
+              <div class="pair"><button type="button" id="buzzBtn">Warning buzz</button><button type="button" id="amnestyBtn" disabled>Amnesty</button></div>
+              <ul class="log" id="pLog"></ul>
+            </div>
+          </div>
+          <p class="caption">Your phone</p>
+        </div>
+
+        <div>
+          <div class="phone" aria-label="Child's screen">
+            <div class="screen">
+              <div class="ph-head"><b>Prodly<span class="dot">.</span></b><span id="kMode">My screen time</span></div>
+              <div class="kidbig" id="kHud"><div class="u">Still yours this week</div><div class="n" id="kBal"></div><div class="hp" aria-hidden="true"><i id="kHp"></i></div><div class="u" id="kOf"></div></div>
+              <div class="rank" id="kRank"><div><small>Your rank</small><span class="r" id="kRankName">Squire</span><div class="xp" aria-hidden="true"><i id="kXp"></i></div><small id="kNext">1 knighting to Knight</small></div><span class="kn" aria-hidden="true">&#9822;&#xFE0E;</span></div>
+              <div class="kidcards"><div>Fresh week in<strong>2 days</strong></div><div>Prods · knightings<strong id="kCount">0 · 0</strong></div></div>
+              <ul class="log" id="kLog"></ul>
+              <button type="button" class="appeal" id="appealBtn">Appeal last prod</button>
+            </div>
+          </div>
+          <p class="caption">Their screen</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="wand">
+    <div class="wrap">
+      <h2>Touch, not tap.</h2>
+      <p class="lede" style="margin-top:16px">Pointing a phone at your son is surveillance. A prod on the arm is contact. The wand puts you in the room, face to face, holding something far too silly to be scary. Your phone does the sounds and the maths.</p>
+      <svg class="render" viewBox="0 0 960 440" role="img" aria-label="Annotated Prodly wand: 1 red foam tip, 2 Bluetooth status light, 3 coin battery inside the handle, 4 striped shaft about 25 centimetres long"><defs>
+  <radialGradient id="dtip" cx="34%" cy="30%" r="78%"><stop offset="0" stop-color="#FF8A93"/><stop offset=".45" stop-color="#E0303F"/><stop offset="1" stop-color="#9A1227"/></radialGradient>
+  <linearGradient id="dshaft" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5A554A"/><stop offset=".5" stop-color="#2A2822"/><stop offset="1" stop-color="#100F0C"/></linearGradient>
+  <linearGradient id="dhandle" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#46423A"/><stop offset=".5" stop-color="#1D1B16"/><stop offset="1" stop-color="#0A0907"/></linearGradient>
+  <pattern id="dhaz" width="22" height="22" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="22" height="22" fill="#17150F"/><rect width="11" height="22" fill="#D7263D"/></pattern>
+  <filter id="dglow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="5"/></filter>
+  <filter id="dshadow" x="-10%" y="-200%" width="120%" height="500%"><feGaussianBlur stdDeviation="10"/></filter>
+</defs>
+<ellipse cx="480" cy="408" rx="390" ry="18" fill="#000" opacity=".16" filter="url(#dshadow)"/>
+<g transform="translate(480 220) rotate(-14) translate(-440 0)">
+  <rect x="186" y="-20" width="36" height="40" rx="8" fill="url(#dhandle)"/>
+  <rect x="216" y="-13" width="380" height="26" fill="url(#dshaft)"/>
+  <rect x="228" y="-13" width="190" height="26" fill="url(#dhaz)"/>
+  <rect x="216" y="-9" width="380" height="4" fill="#fff" opacity=".14"/>
+  <rect x="580" y="-32" width="300" height="64" rx="32" fill="url(#dhandle)"/>
+  <rect x="604" y="-25" width="252" height="8" rx="4" fill="#fff" opacity=".09"/>
+  <circle cx="630" cy="0" r="12" fill="#FF4A5A" opacity=".85" filter="url(#dglow)"/>
+  <circle cx="630" cy="0" r="6" fill="#FFD6DA"/>
+  <text x="712" y="6" text-anchor="middle" font-family="Archivo Black, sans-serif" font-size="15" letter-spacing="3" fill="#7A7468">PRODLY</text>
+  <circle cx="815" cy="0" r="17" fill="none" stroke="#6B665A" stroke-width="2" stroke-dasharray="4 3"/>
+  <circle cx="100" cy="0" r="92" fill="url(#dtip)"/>
+  <ellipse cx="68" cy="-42" rx="28" ry="14" fill="#fff" opacity=".6" transform="rotate(-30 68 -42)"/>
+  <circle cx="130" cy="30" r="3.5" fill="#6E0E1C" opacity=".35"/><circle cx="90" cy="50" r="3" fill="#6E0E1C" opacity=".3"/><circle cx="145" cy="-10" r="3" fill="#6E0E1C" opacity=".3"/>
+</g><line x1="150" y1="164" x2="150" y2="204" stroke="currentColor" stroke-width="2"/><circle cx="150" cy="150" r="15" fill="#D7263D"/><text x="150" y="155" text-anchor="middle" font-family="Archivo Black, sans-serif" font-size="15" fill="#fff">1</text><line x1="664" y1="110" x2="664" y2="160" stroke="currentColor" stroke-width="2"/><circle cx="664" cy="96" r="15" fill="#D7263D"/><text x="664" y="101" text-anchor="middle" font-family="Archivo Black, sans-serif" font-size="15" fill="#fff">2</text><line x1="810" y1="66" x2="810" y2="114" stroke="currentColor" stroke-width="2"/><circle cx="810" cy="52" r="15" fill="#D7263D"/><text x="810" y="57" text-anchor="middle" font-family="Archivo Black, sans-serif" font-size="15" fill="#fff">3</text><line x1="441" y1="304" x2="441" y2="244" stroke="currentColor" stroke-width="2"/><circle cx="441" cy="318" r="15" fill="#D7263D"/><text x="441" y="323" text-anchor="middle" font-family="Archivo Black, sans-serif" font-size="15" fill="#fff">4</text></svg>
+      <div class="features">
+        <div><span class="num">1</span><h3>Soft red foam tip</h3><p>The whole tip is the button. Touch once to prod, tap each shoulder to knight, hold for a warning buzz.</p></div>
+        <div><span class="num">2</span><h3>Bluetooth light</h3><p>Pairs with your phone and glows red when a prod lands, so everyone knows it counted.</p></div>
+        <div><span class="num">3</span><h3>Coin battery</h3><p>Lasts most of a year. Nothing to charge, nothing to forget.</p></div>
+        <div><span class="num">4</span><h3>About 25cm</h3><p>Lives in a kitchen drawer or a back pocket. Each child gets their own rules in the app.</p></div>
+      </div>
+      <div class="nowand">
+        <div class="nw-copy">
+          <h3>Don&#39;t have a wand? No worries. Just use your phone.</h3>
+          <p>Open Prodly and your whole screen becomes the red tip. Same moves, same sounds, nothing to buy.</p>
+          <ul>
+            <li><strong>Tap</strong>to prod.</li>
+            <li><strong>Double-tap</strong>to knight.</li>
+            <li><strong>Hold</strong>for a warning buzz.</li>
+          </ul>
+          <p class="small">Or skip opening it: Back Tap, the Action Button or an Apple Watch will fire a prod straight from your pocket.</p>
+        </div>
+        <div class="pw-wrap">
+          <div class="pw-phone">
+            <div class="pw-screen">
+              <div class="pw-top"><b>Prodly<span class="dot">.</span></b><span>Child 1 &#183; <span id="pwBal">7h 00m</span></span></div>
+              <button type="button" class="pw-nose" id="pwNose" aria-label="Phone wand: tap to prod, double-tap to knight, hold to buzz"><span class="pw-shine"></span></button>
+              <div class="pw-msg" id="pwMsg" aria-live="polite">Tap, double-tap or hold</div>
+              <div class="pw-hint">Point. Touch. Done.</div>
+            </div>
+          </div>
+          <p class="caption">Your phone as the wand. Try it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="why">
+    <div class="wrap">
+      <h2>Why it works</h2>
+      <p class="lede" style="margin-top:16px">It isn&#39;t a gimmick. It&#39;s three well-studied ideas in one household tool.</p>
+      <div class="evidence">
+        <article class="ev">
+          <h3>Empty threats teach kids to ignore you</h3>
+          <p>A 2024 national poll of 725 US parents of young children found threats are a go-to tactic, with a quarter threatening no Santa or gifts. The poll&#39;s co-director warned that empty threats &#8220;undermine trust and credibility.&#8221; An earlier home-observation study linked mothers not following through to more conduct problems in preschoolers.</p>
+          <p class="src">University of Michigan Health C.S. Mott Children&#39;s Hospital National Poll on Children&#39;s Health, 2024. Journal of Abnormal Child Psychology, 1989.</p>
+        </article>
+        <article class="ev">
+          <h3>Losing hurts more than winning pleases</h3>
+          <p>Loss aversion is one of the best-established findings in behavioural economics. In a Chicago Heights field trial, teachers paid a bonus up front, and asked to hand it back if results didn&#39;t improve, raised maths scores by 0.2 to 0.4 standard deviations. The same bonus paid afterwards made no significant difference.</p>
+          <p class="src">Kahneman &amp; Tversky, 1979. Fryer, Levitt, List &amp; Sadoff, NBER Working Paper 18237, 2012.</p>
+        </article>
+        <article class="ev">
+          <h3>Taking tokens away works with kids</h3>
+          <p>Psychologists call it &#8220;response cost&#8221;: children hold tokens and lose them for misbehaviour. Classroom studies find it cuts disruptive behaviour about as well as rewards do, and teachers tend to prefer it. Using both together, as Prodly does, is a standard approach.</p>
+          <p class="src">McGoey &amp; DuPaul, School Psychology Quarterly, 2000. Studies in the Journal of Applied Behavior Analysis.</p>
+        </article>
+      </div>
+      <p class="footnote">In fairness: when the teacher trial was repeated and the two years pooled, the effect was smaller overall, strong in the first year and absent in the second (Fryer et al., American Economic Journal: Economic Policy, 2022).</p>
+    </div>
+  </section>
+
+  <section class="close" id="join">
+    <div class="wrap">
+      <h2>Give it. <span>Let them guard it.</span></h2>
+      <p>Prodly is in development. The app comes first; the wand follows for families who want the full ceremony.</p>
+      <a class="btn btn-red" href="#top">Get early access</a>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap"><span>Prodly. Prod the bad. Knight the good.</span><span>&copy; 2026 OpenWorks Industries Pte. Ltd. All rights reserved.</span></div></footer>
+
+<script>
+(function(){
+  const $ = (id) => document.getElementById(id);
+  const cfg = { time:{weekly:420,prod:10,knight:10}, robux:{weekly:400,prod:5,knight:5} };
+  let mode='time', bal=420, log=[], cool=0, prods=0, knights=0, timer=null;
+  const COOLDOWN=3;
+  const fmt=(v)=> mode==='robux' ? String(v) : (v<60 ? v+'m' : Math.floor(v/60)+'h '+String(v%60).padStart(2,'0')+'m');
+  const amt=(v)=> mode==='robux' ? v+' Robux' : v+'m';
+  const now=()=> new Date().toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
+
+  let ctx=null;
+  function tones(notes){
+    try{
+      ctx = ctx || new (window.AudioContext||window.webkitAudioContext)();
+      let t=ctx.currentTime;
+      notes.forEach(([f,d])=>{
+        const o=ctx.createOscillator(), g=ctx.createGain();
+        o.type='triangle'; o.frequency.value=f;
+        g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.18,t+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t+d);
+        o.connect(g).connect(ctx.destination); o.start(t); o.stop(t+d+0.02); t+=d*0.85;
+      });
+    }catch(e){}
+  }
+  const sadSound=()=>tones([[392,.16],[311,.28]]);
+  const fanfare=()=>tones([[523,.12],[659,.12],[784,.12],[1047,.35]]);
+  const trombone=()=>tones([[330,.3],[311,.3],[294,.3],[262,.6]]);
+  const buzzSound=()=>tones([[110,.25]]);
+
+  function li(e, kid){
+    const cls = e.sign==='+' ? 'plus' : e.sign==='-' ? 'minus' : '';
+    return '<li><span>'+e.label+'<br><span class="t">'+e.time+'</span></span><b class="'+cls+'">'+e.amount+'</b></li>';
+  }
+  function render(){
+    const c=cfg[mode];
+    $('mTime').setAttribute('aria-pressed', mode==='time'); $('mRobux').setAttribute('aria-pressed', mode==='robux');
+    $('wOut').textContent=fmt(c.weekly); $('pOut').textContent='−'+(mode==='robux'?c.prod:c.prod+'m'); $('kOut').textContent='+'+(mode==='robux'?c.knight:c.knight+'m');
+    $('wHint').textContent = mode==='robux' ? 'Paid out Sunday as a gift code' : 'Resets every Sunday';
+    $('pMode').textContent='Child 1 · '+(mode==='robux'?'Robux':'screen time');
+    $('pBal').textContent=fmt(bal); $('pOf').textContent=(mode==='robux'?'Robux left of ':'left of ')+fmt(c.weekly);
+    $('pBar').style.width=Math.max(0,Math.min(100,bal/c.weekly*100))+'%';
+    const left=Math.max(0,Math.ceil((cool-Date.now())/1000));
+    const btn=$('prodBtn');
+    if(left>0){btn.disabled=true;$('prodTop').textContent=left+'s';$('prodSub').textContent='cooling down';}
+    else if(bal<=0){btn.disabled=true;$('prodTop').textContent=mode==='robux'?'SKINT':'OFF';$('prodSub').textContent=mode==='robux'?'nothing left':'screens off';}
+    else{btn.disabled=false;$('prodTop').textContent='PROD';$('prodSub').textContent='−'+(mode==='robux'?c.prod:c.prod+'m');}
+    $('knightAmt').textContent='+'+(mode==='robux'?c.knight:c.knight+'m');
+    $('amnestyBtn').disabled=!log.some(e=>e.type==='prod');
+    $('pLog').innerHTML=log.slice(0,4).map(e=>li(e)).join('');
+    $('kMode').textContent=mode==='robux'?'My Robux':'My screen time';
+    $('kBal').textContent=fmt(bal); $('kOf').textContent='of '+fmt(c.weekly)+(mode==='robux'?' Robux':'');
+    $('kCount').textContent=prods+' · '+knights;
+    $('kHp').style.width=Math.max(0,Math.min(100,bal/c.weekly*100))+'%';
+    const ranks=[[0,'Squire'],[1,'Knight'],[3,'Knight Commander'],[6,'Paladin'],[10,'Legend of the Round Table']];
+    let ri=0; ranks.forEach((x,i)=>{ if(knights>=x[0]) ri=i; });
+    $('kRankName').textContent=ranks[ri][1];
+    const nxt=ranks[ri+1];
+    if(nxt){ const need=nxt[0]-knights, span=nxt[0]-ranks[ri][0]; $('kXp').style.width=((span-need)/span*100)+'%'; $('kNext').textContent=need+' knighting'+(need>1?'s':'')+' to '+nxt[1]; }
+    else { $('kXp').style.width='100%'; $('kNext').textContent='Top rank. Bow down.'; }
+    const kidLog=log.filter(e=>e.type!=='buzz').slice(0,3);
+    $('kLog').innerHTML = kidLog.length ? kidLog.map(e=>li(e,true)).join('') : '<li><span>Nothing yet this week. Keep it that way.</span><b></b></li>';
+  }
+  function flash(id,c){const el=$(id); el.classList.remove(c); void el.offsetWidth; el.classList.add(c);}
+  function status(t){$('status').textContent=t;}
+  function fresh(msg){const c=cfg[mode];bal=c.weekly;log=[];cool=0;prods=0;knights=0;status(msg);render();}
+  function tick(){ if(cool>Date.now()) render(); else { clearInterval(timer); timer=null; render(); } }
+
+  $('mTime').onclick=()=>{ if(mode!=='time'){mode='time';fresh('Stake: screen time. Fresh week.');} };
+  $('mRobux').onclick=()=>{ if(mode!=='robux'){mode='robux';fresh('Stake: Robux. Fresh week.');} };
+  document.querySelectorAll('.stepper button').forEach(b=>b.onclick=()=>{
+    const k=b.dataset.k, d=+b.dataset.d, c=cfg[mode];
+    const step = k==='weekly' ? (mode==='robux'?50:30) : 5;
+    const min = k==='weekly' ? step : 5;
+    const max = k==='weekly' ? (mode==='robux'?5000:1680) : (mode==='robux'?100:60);
+    c[k]=Math.max(min,Math.min(max,c[k]+d*step));
+    if(k==='weekly') fresh('New allowance. Fresh week.'); else render();
+  });
+  $('prodBtn').onclick=()=>{
+    const c=cfg[mode]; if(cool>Date.now()||bal<=0) return;
+    const a=Math.min(c.prod,bal); bal-=a; prods++;
+    log.unshift({type:'prod',cost:a,label:'Prod',amount:'−'+(mode==='robux'?a:a+'m'),sign:'-',time:now()});
+    cool=Date.now()+COOLDOWN*1000; if(!timer) timer=setInterval(tick,250);
+    flash('kHud','hit');
+    if(bal===0){trombone();status('Sad trombone. Nothing left.');} else {sadSound();status(amt(a)+' gone.');}
+    render();
+  };
+  $('knightBtn').onclick=()=>{
+    const k=cfg[mode].knight; bal+=k; knights++;
+    log.unshift({type:'knight',label:'Knighted',amount:'+'+(mode==='robux'?k:k+'m'),sign:'+',time:now()});
+    flash('kRank','lvl'); fanfare(); status('Arise, Sir Child 1. +'+amt(k)+'.'); render();
+  };
+  $('buzzBtn').onclick=()=>{ log.unshift({type:'buzz',label:'Warning buzz',amount:'0',sign:'',time:now()}); buzzSound(); status('Bzzt. Consider yourself warned.'); render(); };
+  $('amnestyBtn').onclick=()=>{
+    const i=log.findIndex(e=>e.type==='prod'); if(i<0) return;
+    const p=log.splice(i,1)[0]; bal+=p.cost; prods=Math.max(0,prods-1); cool=0;
+    log.unshift({type:'amnesty',label:'Amnesty',amount:'+'+(mode==='robux'?p.cost:p.cost+'m'),sign:'+',time:now()});
+    status('Amnesty granted. The sibling started it.'); render();
+  };
+  $('appealBtn').onclick=()=>{ status('Appeal received from Child 1. You can ignore it.'); };
+  render();
+})();
+</script>
+<script>
+(function(){
+  const nose=document.getElementById('pwNose'), msg=document.getElementById('pwMsg'), balEl=document.getElementById('pwBal');
+  let bal=420, t=null, hold=null, held=false, ctx=null;
+  const fmt=v=>Math.floor(v/60)+'h '+String(v%60).padStart(2,'0')+'m';
+  function tones(n){try{ctx=ctx||new(window.AudioContext||window.webkitAudioContext)();let x=ctx.currentTime;n.forEach(([f,d])=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(.0001,x);g.gain.exponentialRampToValueAtTime(.18,x+.02);g.gain.exponentialRampToValueAtTime(.0001,x+d);o.connect(g).connect(ctx.destination);o.start(x);o.stop(x+d+.02);x+=d*.85;});}catch(e){}}
+  function fx(c){nose.classList.remove('hit','lvl');void nose.offsetWidth;nose.classList.add(c);}
+  function show(text){msg.textContent=text;balEl.textContent=fmt(bal);}
+  function prod(){if(bal<=0){show('Screens off.');return;}bal=Math.max(0,bal-10);fx('hit');tones([[392,.16],[311,.28]]);if(navigator.vibrate)navigator.vibrate(60);show('Prod. \u221210m');}
+  function knight(){bal+=10;fx('lvl');tones([[523,.12],[659,.12],[784,.12],[1047,.35]]);show('\u265E Arise. +10m');}
+  function buzz(){tones([[110,.3]]);if(navigator.vibrate)navigator.vibrate([80,40,80]);show('Bzzt. Warned.');}
+  nose.addEventListener('pointerdown',()=>{held=false;hold=setTimeout(()=>{held=true;clearTimeout(t);t=null;buzz();},550);});
+  ['pointerup','pointerleave','pointercancel'].forEach(e=>nose.addEventListener(e,()=>clearTimeout(hold)));
+  nose.addEventListener('click',()=>{if(held){held=false;return;}if(t){clearTimeout(t);t=null;knight();}else{t=setTimeout(()=>{t=null;prod();},280);}});
+  nose.addEventListener('contextmenu',e=>e.preventDefault());
+})();
+</script>
+</body>
+</html>
